@@ -19,8 +19,8 @@ const HeroCarousel = () => {
       <Carousel
         showThumbs={false}
         autoPlay={true}
-        // infiniteLoop={true}
-        // interval={2000}
+        infiniteLoop={true}
+        interval={2000}
         showArrows={false}
         showStatus={false}
       >
