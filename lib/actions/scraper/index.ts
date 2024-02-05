@@ -2,7 +2,12 @@
 
 import axios from "axios";
 import * as cheerio from "cheerio";
-import { extractCurrency, extractDescription, extractPrice } from "../utils";
+import {
+  extractCurrency,
+  extractDescription,
+  extractPrice,
+  extractStars,
+} from "../utils";
 
 export async function scrapeAmazonProduct(url: string) {
   if (!url) return;
@@ -44,6 +49,23 @@ export async function scrapeAmazonProduct(url: string) {
       $(".a-size-base.a-color-price")
     );
 
+    const stars = extractStars(
+      $("#acrPopover"),
+      $(".a-icon.a-icon-star .a-icon-alt"),
+      $(".a-icon-alt"),
+      $(".a-icon.a-icon-star-small .a-icon-alt"),
+      $(".a-icon.a-icon-star-medium .a-icon-alt"),
+      $(".a-icon.a-icon-star-large .a-icon-alt"),
+      $(".a-size-base a-color-base"),
+      $(
+        ".a-declarative span.a-popover-trigger a-declarative span.a-size-base a-color-base"
+      )
+    );
+
+    const finalStars = stars ? stars : 5;
+
+    // console.log(typeof finalStars, "finalStars");
+
     const outOfStock =
       $("#availability span").text().trim().toLowerCase() ===
       "currently unavailable";
@@ -72,13 +94,15 @@ export async function scrapeAmazonProduct(url: string) {
       discountRate: Number(discountRate),
       category: "category",
       reviewsCount: 100,
-      stars: 4.5,
+      stars: finalStars,
       isOutOfStock: outOfStock,
       description,
       lowestPrice: Number(currentPrice) || Number(originalPrice),
       highestPrice: Number(originalPrice) || Number(currentPrice),
       averagePrice: Number(currentPrice) || Number(originalPrice),
     };
+
+    // console.log(data, "data");
 
     return data;
   } catch (error: any) {

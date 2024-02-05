@@ -30,6 +30,17 @@ export function extractPrice(...elements: any) {
   return "";
 }
 
+export function extractStars(...elements: any) {
+  for (const element of elements) {
+    const stars = element.text().trim();
+    if (stars) {
+      return parseFloat(stars);
+    }
+
+    return stars ? parseFloat(stars) : 0;
+  }
+}
+
 // Extracts and returns the currency symbol from an element.
 export function extractCurrency(element: any) {
   const currencyText = element.text().trim().slice(0, 1);
